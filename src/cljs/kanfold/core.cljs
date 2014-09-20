@@ -1,32 +1,14 @@
 (ns kanfold.core
-  (:require [cljs.core.async :as async :refer [>! <! alts! chan sliding-buffer
-                                               put! close!]]
-            [clojure.browser.repl]
+  (:require [clojure.browser.repl]
             [om-bootstrap.panel :as p]
             [om-bootstrap.grid :as g]
             [om-bootstrap.random :as r]
             [om-tools.dom :as d :include-macros true]
             [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
-            [kanfold.draggable :as dnd]
-            [figwheel.client :as fw :include-macros true])
-  (:require-macros [cljs.core.async.macros :as am :refer [go go-loop alt!]]))
+            [figwheel.client :as fw :include-macros true]))
 
 (enable-console-print!)
-
-;; Overcome some of the browser limitations around DnD
-(def mouse-move-ch
-  (chan (sliding-buffer 1)))
-
-(def mouse-down-ch
-  (chan (sliding-buffer 1)))
-
-(def mouse-up-ch
-  (chan (sliding-buffer 1)))
-
-(js/window.addEventListener "mousedown" #(put! mouse-down-ch %))
-(js/window.addEventListener "mouseup"   #(put! mouse-up-ch   %))
-(js/window.addEventListener "mousemove" #(put! mouse-move-ch %))
 
 (def app-state
   (atom {:project {:name "My Cool Project"}
@@ -65,14 +47,7 @@
                              {:title "Item 11" :description "This is item 11"
                               :tags []}
                              {:title "Item 12" :description "This is item 12"
-                              :tags []}]}]
-
-         :comms {:mouse-move {:ch  mouse-move-ch
-                              :mult (async/mult mouse-move-ch)}
-                 :mouse-up   {:ch  mouse-up-ch
-                              :mult (async/mult mouse-up-ch)}
-                 :mouse-down {:ch  mouse-down-ch
-                              :mult (async/mult mouse-down-ch)}}}))
+                              :tags []}]}]}))
 
 (defn ticket-preview [data owner]
   (reify
